@@ -1,22 +1,31 @@
 const canvas = document.getElementById('electricFieldCanvas');
 const ctx = canvas.getContext('2d');
 
+class Sphere {
+    constructor(id, radius, x, y, color) {
+        this.id = id
+        this.radius = radius
+        this.x = x
+        this.y = y
+        this.color = color
+    }
+}
+
 let grid = [[],[]]
 
 
 // Размер сетки
 const gridSize = 15;
-
-let x0 = 4
-let y0 = 4
-
 let directionX = 1
-
 let modellingSpeed = 500
+let maxValue = 100
 
-let firstSphere = new Sphere("firstSphere", 10, 4, 4, "blue")
+let firstSphere = new Sphere("firstSphere", 5, 4, 4, "blue")
+let secondSphere = new Sphere("secondSphere", 8, 8, 8, "red")
 
-function createCoordinateGrid() {
+
+
+function refreshGrid() {
     let matrix = []
     for (let row = 0; row < gridSize; row++) {
         matrix.push([])
@@ -43,10 +52,16 @@ function drawGrid() {
             const canvasY = gridY * cellHeight + cellHeight / 2
             ctx.fillStyle = 'black';
 
-            if (gridX === x0 && gridY === y0) {
+            if (gridX === firstSphere.x && gridY === firstSphere.y) {
                 ctx.beginPath();
-                ctx.arc(canvasX, canvasY, 5, 0, Math.PI * 2); // Рисуем круг
-                ctx.fillStyle = 'blue';           // Цвет заливки
+                ctx.arc(canvasX, canvasY, firstSphere.radius, 0, Math.PI * 2); // Рисуем круг
+                ctx.fillStyle = firstSphere.color;           // Цвет заливки
+                ctx.fill();
+                ctx.closePath();
+            } else if (gridX === secondSphere.x && gridY === secondSphere.y) {
+                ctx.beginPath();
+                ctx.arc(canvasX, canvasY, secondSphere.radius, 0, Math.PI * 2); // Рисуем круг
+                ctx.fillStyle = secondSphere.color;           // Цвет заливки
                 ctx.fill();
                 ctx.closePath();
             } else {
@@ -55,21 +70,25 @@ function drawGrid() {
             }
         }
     }
-
-
 }
 
-createCoordinateGrid()
-
 function recalcGrid() {
-
-    let maxValue = 100
-    grid[x0][y0] = maxValue
+    refreshGrid()
+    grid[firstSphere.x][firstSphere.y] = maxValue
 
     for (let y = 0; y < gridSize; y++) {
         for (let x = 0; x < gridSize; x++) {
-            if (((x - x0)**2 + (y - y0)**2) !== 0) {
-                grid[y][x] = (maxValue / Math.sqrt((x - x0)**2 + (y - y0)**2)).toFixed(1)
+            if (((x - firstSphere.x)**2 + (y - firstSphere.y)**2) !== 0) {
+                grid[y][x] = Math.round(maxValue / Math.sqrt((x - firstSphere.x)**2 + (y - firstSphere.y)**2))
+            }
+        }
+    }
+
+    grid[secondSphere.x][secondSphere.y] = maxValue
+    for (let y = 0; y < gridSize; y++) {
+        for (let x = 0; x < gridSize; x++) {
+            if (((x - secondSphere.x)**2 + (y - secondSphere.y)**2) !== 0) {
+                grid[y][x] = grid[y][x] + Math.round(maxValue / Math.sqrt((x - secondSphere.x)**2 + (y - secondSphere.y)**2)) + 0
             }
         }
     }
@@ -78,14 +97,20 @@ function recalcGrid() {
 async function startModelling() {
     for (let iteration = 0; iteration < 15; iteration++) {
         await new Promise(resolve => setTimeout(resolve, modellingSpeed));
-        if (y0 >= gridSize) directionX *= -1
-        y0 = y0 + (1 * directionX)
+        if (firstSphere.y >= gridSize) directionX *= -1
+        firstSphere.y = firstSphere.y + (1 * directionX)
         recalcGrid()
         drawGrid()
     }
 }
 
+function valueToGrayscaleColor(value) {
+    const intensity = Math.round((value / 100) * 255); // нормализация диапазона в 0-255
+    return `rgb(${intensity},${intensity},${intensity})`;
+}
+
 
 
 startModelling()
+
 
