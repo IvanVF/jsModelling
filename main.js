@@ -4,14 +4,12 @@ const canvas = document.getElementById('electricFieldCanvas');
 const ctx = canvas.getContext('2d');
 
 class Sphere {
-    constructor(id, radius, x, y, color, movingDirectionX, movingDirectionY) {
+    constructor(id, radius, x, y, color) {
         this.id = id
         this.radius = radius
         this.x = x
         this.y = y
         this.color = color
-        this.movingDirectionX = movingDirectionX
-        this.movingDirectionY = movingDirectionY
     }
 }
 
@@ -80,7 +78,7 @@ function drawGrid() {
 
 function recalcGrid() {
     refreshGrid()
-    grid[firstSphere.x][firstSphere.y] = maxValue
+    grid[firstSphere.y][firstSphere.x] = maxValue
 
     for (let y = 0; y < gridSize; y++) {
         for (let x = 0; x < gridSize; x++) {
@@ -90,7 +88,7 @@ function recalcGrid() {
         }
     }
 
-    grid[secondSphere.x][secondSphere.y] = maxValue
+    grid[secondSphere.y][secondSphere.x] = maxValue
     for (let y = 0; y < gridSize; y++) {
         for (let x = 0; x < gridSize; x++) {
             if (((x - secondSphere.x)**2 + (y - secondSphere.y)**2) !== 0) {
