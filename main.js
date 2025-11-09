@@ -3,6 +3,9 @@
 const electricFieldCanvas = document.getElementById('electricFieldCanvas');
 const electricFieldCtx = electricFieldCanvas.getContext('2d');
 
+const potentialValueCanvas = document.getElementById('potentialValueCanvas');
+const potentialValueCanvasCtx = potentialValueCanvas.getContext('2d');
+
 
 
 // Размер сетки
@@ -13,6 +16,7 @@ let maxValue = 100
 class Main {
     movingHandler = new MovingHandler()
     gridHandler = new GridHandler()
+    drawHandler = new DrawHandler()
 
     firstSphere = new Sphere("firstSphere", 5, 4, 4, "blue")
     secondSphere = new Sphere("secondSphere", 8, 8, 8, "red")
@@ -27,7 +31,8 @@ class Main {
             this.movingHandler.calculateSphereMoving(this.secondSphere, this.gridSize)
 
             this.grid = this.gridHandler.recalcGrid(this.gridSize, this.firstSphere, this.secondSphere)
-            this.gridHandler.drawGrid(electricFieldCtx, this.firstSphere, this.secondSphere, this.grid, this.gridSize)
+            this.drawHandler.drawElectricField(electricFieldCanvas, electricFieldCtx, this.firstSphere, this.secondSphere, this.grid, this.gridSize)
+            this.drawHandler.drawPotentialValue(potentialValueCanvas, potentialValueCanvasCtx, this.grid, this.gridSize)
         }
     }
 
