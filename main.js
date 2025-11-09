@@ -1,7 +1,7 @@
 "use strict"
 
-const canvas = document.getElementById('electricFieldCanvas');
-const ctx = canvas.getContext('2d');
+const electricFieldCanvas = document.getElementById('electricFieldCanvas');
+const electricFieldCtx = electricFieldCanvas.getContext('2d');
 
 
 
@@ -27,7 +27,7 @@ class Main {
             this.movingHandler.calculateSphereMoving(this.secondSphere, this.gridSize)
 
             this.grid = this.gridHandler.recalcGrid(this.gridSize, this.firstSphere, this.secondSphere)
-            this.gridHandler.drawGrid(ctx, this.firstSphere, this.secondSphere, this.grid, this.gridSize)
+            this.gridHandler.drawGrid(electricFieldCtx, this.firstSphere, this.secondSphere, this.grid, this.gridSize)
         }
     }
 

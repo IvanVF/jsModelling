@@ -2,10 +2,10 @@ class GridHandler {
 
     refreshGrid(gridSize) {
         let matrix = []
-        for (let row = 0; row < gridSize; row++) {
+        for (let y = 0; y < gridSize; y++) {
             matrix.push([])
-            for (let column = 0; column < gridSize; column++) {
-                matrix[row][column] = 0
+            for (let x = 0; x < gridSize; x++) {
+                matrix[y][x] = new GridCell(null, x, y, 0)
             }
         }
 
@@ -13,9 +13,9 @@ class GridHandler {
     }
 
     drawGrid(ctx, firstSphere, secondSphere, grid, gridSize) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const cellWidth = canvas.width / grid[0].length
-        const cellHeight = canvas.height / grid[0].length
+        ctx.clearRect(0, 0, electricFieldCanvas.width, electricFieldCanvas.height);
+        const cellWidth = electricFieldCanvas.width / grid[0].length
+        const cellHeight = electricFieldCanvas.height / grid[0].length
 
         ctx.font = `${Math.min(cellWidth / 3, cellHeight / 3)}px Arial`
         ctx.textAlign = "center"
@@ -40,7 +40,7 @@ class GridHandler {
                     ctx.fill();
                     ctx.closePath();
                 } else {
-                    const color =  this.valueToGrayscaleColor(grid[gridY][gridX])
+                    const color =  this.valueToGrayscaleColor(grid[gridY][gridX].potential)
                     ctx.fillStyle = color;
                     ctx.fillRect(gridX * cellWidth, gridY * cellHeight, cellWidth, cellHeight);
                     //ctx.fillText(grid[gridY][gridX].toString(), canvasX, canvasY)
@@ -56,21 +56,21 @@ class GridHandler {
 
     recalcGrid(gridSize, firstSphere, secondSphere) {
         let grid = this.refreshGrid(gridSize)
-        grid[firstSphere.y][firstSphere.x] = maxValue
+        grid[firstSphere.y][firstSphere.x].potential = maxValue
 
         for (let y = 0; y < gridSize; y++) {
             for (let x = 0; x < gridSize; x++) {
                 if (((x - firstSphere.x)**2 + (y - firstSphere.y)**2) !== 0) {
-                    grid[y][x] = Math.round(maxValue / Math.sqrt((x - firstSphere.x)**2 + (y - firstSphere.y)**2))
+                    grid[y][x].potential = Math.round(maxValue / Math.sqrt((x - firstSphere.x)**2 + (y - firstSphere.y)**2))
                 }
             }
         }
 
-        grid[secondSphere.y][secondSphere.x] = maxValue
+        grid[secondSphere.y][secondSphere.x].potential = maxValue
         for (let y = 0; y < gridSize; y++) {
             for (let x = 0; x < gridSize; x++) {
                 if (((x - secondSphere.x)**2 + (y - secondSphere.y)**2) !== 0) {
-                    grid[y][x] = grid[y][x] + Math.round(maxValue / Math.sqrt((x - secondSphere.x)**2 + (y - secondSphere.y)**2)) + 0
+                    grid[y][x].potential = grid[y][x].potential + Math.round(maxValue / Math.sqrt((x - secondSphere.x)**2 + (y - secondSphere.y)**2)) + 0
                 }
             }
         }
