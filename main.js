@@ -1,13 +1,17 @@
+"use strict"
+
 const canvas = document.getElementById('electricFieldCanvas');
 const ctx = canvas.getContext('2d');
 
 class Sphere {
-    constructor(id, radius, x, y, color) {
+    constructor(id, radius, x, y, color, movingDirectionX, movingDirectionY) {
         this.id = id
         this.radius = radius
         this.x = x
         this.y = y
         this.color = color
+        this.movingDirectionX = movingDirectionX
+        this.movingDirectionY = movingDirectionY
     }
 }
 
@@ -65,8 +69,10 @@ function drawGrid() {
                 ctx.fill();
                 ctx.closePath();
             } else {
-                ctx.fillStyle = 'black';
-                ctx.fillText(grid[gridY][gridX].toString(), canvasX, canvasY)
+                const color = valueToGrayscaleColor(grid[gridY][gridX])
+                ctx.fillStyle = color;
+                ctx.fillRect(gridX * cellWidth, gridY * cellHeight, cellWidth, cellHeight);
+                //ctx.fillText(grid[gridY][gridX].toString(), canvasX, canvasY)
             }
         }
     }
@@ -92,13 +98,17 @@ function recalcGrid() {
             }
         }
     }
+
+    console.log(grid)
 }
 
 async function startModelling() {
     for (let iteration = 0; iteration < 15; iteration++) {
         await new Promise(resolve => setTimeout(resolve, modellingSpeed));
-        if (firstSphere.y >= gridSize) directionX *= -1
-        firstSphere.y = firstSphere.y + (1 * directionX)
+
+        calculateMoving(firstSphere)
+        calculateMoving(secondSphere)
+
         recalcGrid()
         drawGrid()
     }
@@ -107,6 +117,19 @@ async function startModelling() {
 function valueToGrayscaleColor(value) {
     const intensity = Math.round((value / 100) * 255); // нормализация диапазона в 0-255
     return `rgb(${intensity},${intensity},${intensity})`;
+}
+
+function calculateMoving(sphere) {
+    let randomDirectionX = Math.random() < 0.5 ? 1 : -1
+    let randomDirectionY = Math.random() < 0.5 ? 1 : -1
+
+    if (sphere.x >= gridSize - 1) randomDirectionX = -1
+    if (sphere.x <= 1) randomDirectionX = 1
+    if (sphere.y >= gridSize - 1) randomDirectionY = -1
+    if (sphere.y <= 1) randomDirectionY = 1
+
+    sphere.x = sphere.x + randomDirectionX
+    sphere.y = sphere.y + randomDirectionY
 }
 
 

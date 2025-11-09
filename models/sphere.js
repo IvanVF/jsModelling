@@ -1,4 +1,4 @@
-export class Sphere {
+class Sphere {
     constructor(id, radius, x, y, color) {
         this.id = id
         this.radius = radius
