@@ -20,6 +20,7 @@ class Main {
 
     firstSphere = new Sphere("firstSphere", 5, 4, 4, "blue")
     secondSphere = new Sphere("secondSphere", 8, 8, 8, "red")
+    sphereArray = [this.firstSphere, this.secondSphere]
     grid = [[]]
     gridSize = 15;
 
@@ -27,10 +28,10 @@ class Main {
         for (let iteration = 0; iteration < 15; iteration++) {
             await new Promise(resolve => setTimeout(resolve, modellingSpeed));
 
-            this.movingHandler.calculateSphereMoving(this.firstSphere, this.gridSize)
-            this.movingHandler.calculateSphereMoving(this.secondSphere, this.gridSize)
+            this.movingHandler.calculateSphereMoving(this.firstSphere, this.grid, this.gridSize)
+            this.movingHandler.calculateSphereMoving(this.secondSphere, this.grid, this.gridSize)
 
-            this.grid = this.gridHandler.recalcGrid(this.gridSize, this.firstSphere, this.secondSphere)
+            this.grid = this.gridHandler.recalcGrid(this.gridSize, this.sphereArray)
             this.drawHandler.drawElectricField(electricFieldCanvas, electricFieldCtx, this.firstSphere, this.secondSphere, this.grid, this.gridSize)
             this.drawHandler.drawPotentialValue(potentialValueCanvas, potentialValueCanvasCtx, this.grid, this.gridSize)
         }
