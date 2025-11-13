@@ -11,16 +11,19 @@ const potentialValueCanvasCtx = potentialValueCanvas.getContext('2d');
 // Размер сетки
 
 let modellingSpeed = 500
-let maxValue = 100
 
 class Main {
     movingHandler = new MovingHandler()
     gridHandler = new GridHandler()
     drawHandler = new DrawHandler()
 
-    firstSphere = new Sphere("firstSphere", 5, 4, 4, "blue")
-    secondSphere = new Sphere("secondSphere", 8, 8, 8, "red")
-    sphereArray = [this.firstSphere, this.secondSphere]
+    sphereArray = [
+        new Sphere("sphere1", 5, 4, 4, "red", 50),
+        new Sphere("sphere2", 5, 8, 8, "blue", -50),
+        new Sphere("sphere3", 5, 1, 12, "red", 50),
+        new Sphere("sphere4", 5, 12, 1, "blue", -50),
+        new Sphere("sphere4", 5, 10, 6, "blue", -50)
+    ]
     grid = [[]]
     gridSize = 15;
 
@@ -28,12 +31,14 @@ class Main {
         for (let iteration = 0; iteration < 15; iteration++) {
             await new Promise(resolve => setTimeout(resolve, modellingSpeed));
 
-            this.movingHandler.calculateSphereMoving(this.firstSphere, this.grid, this.gridSize)
-            this.movingHandler.calculateSphereMoving(this.secondSphere, this.grid, this.gridSize)
-
             this.grid = this.gridHandler.recalcGrid(this.gridSize, this.sphereArray)
-            this.drawHandler.drawElectricField(electricFieldCanvas, electricFieldCtx, this.firstSphere, this.secondSphere, this.grid, this.gridSize)
             this.drawHandler.drawPotentialValue(potentialValueCanvas, potentialValueCanvasCtx, this.grid, this.gridSize)
+            this.drawHandler.drawElectricField(electricFieldCanvas, electricFieldCtx, this.grid, this.gridSize, this.sphereArray)
+            this.sphereArray.forEach(sphere => this.movingHandler.calculateSphereMoving(sphere, this.grid, this.gridSize))
+            this.drawHandler.drawPotentialValue(potentialValueCanvas, potentialValueCanvasCtx, this.grid, this.gridSize)
+            this.drawHandler.drawElectricField(electricFieldCanvas, electricFieldCtx, this.grid, this.gridSize, this.sphereArray)
+            let a = 0
+
         }
     }
 

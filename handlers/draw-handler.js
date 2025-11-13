@@ -1,5 +1,5 @@
 class DrawHandler {
-    drawElectricField(electricFieldCanvas, ctx, firstSphere, secondSphere, grid, gridSize) {
+    drawElectricField(electricFieldCanvas, ctx, grid, gridSize, spheres) {
         ctx.clearRect(0, 0, electricFieldCanvas.width, electricFieldCanvas.height);
         const cellWidth = electricFieldCanvas.width / grid[0].length
         const cellHeight = electricFieldCanvas.height / grid[0].length
@@ -14,16 +14,12 @@ class DrawHandler {
                 const canvasY = gridY * cellHeight + cellHeight / 2
                 ctx.fillStyle = 'black';
 
-                if (gridX === firstSphere.x && gridY === firstSphere.y) {
+                let sphere = spheres.find(sp => sp.x === gridX && sp.y === gridY)
+
+                if (sphere != null) {
                     ctx.beginPath();
-                    ctx.arc(canvasX, canvasY, firstSphere.radius, 0, Math.PI * 2); // Рисуем круг
-                    ctx.fillStyle = firstSphere.color;           // Цвет заливки
-                    ctx.fill();
-                    ctx.closePath();
-                } else if (gridX === secondSphere.x && gridY === secondSphere.y) {
-                    ctx.beginPath();
-                    ctx.arc(canvasX, canvasY, secondSphere.radius, 0, Math.PI * 2); // Рисуем круг
-                    ctx.fillStyle = secondSphere.color;           // Цвет заливки
+                    ctx.arc(canvasX, canvasY, sphere.radius, 0, Math.PI * 2); // Рисуем круг
+                    ctx.fillStyle = sphere.color;           // Цвет заливки
                     ctx.fill();
                     ctx.closePath();
                 } else {
@@ -54,7 +50,7 @@ class DrawHandler {
                 const color = this.valueToGrayscaleColorRevert(grid[gridY][gridX].potential)
                 ctx.fillStyle = color;
                 //ctx.fillRect(gridX * cellWidth, gridY * cellHeight, cellWidth, cellHeight);
-                ctx.fillText(grid[gridY][gridX].potential.toString(), canvasX, canvasY)
+                ctx.fillText(grid[gridY][gridX].potential.toFixed(1), canvasX, canvasY)
 
             }
         }
@@ -66,7 +62,8 @@ class DrawHandler {
     }
 
     valueToGrayscaleColorRevert(value) {
-        const intensity = 255 - Math.round((value / 100) * 255); // нормализация диапазона в 0-255
+        let intensity = 255 - Math.round((value / 100) * 255); // нормализация диапазона в 0-255
+        if (intensity > 200) intensity = 200
         return `rgb(${intensity},${intensity},${intensity})`;
     }
 }

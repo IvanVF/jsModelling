@@ -16,15 +16,15 @@ class GridHandler {
         let grid = this.refreshGrid(gridSize)
 
         sphereArray.forEach(sphere => {
-            grid[sphere.y][sphere.x].potential = maxValue
-
             for (let y = 0; y < gridSize; y++) {
                 for (let x = 0; x < gridSize; x++) {
                     if (((x - sphere.x)**2 + (y - sphere.y)**2) !== 0) {
-                        grid[y][x].potential = grid[y][x].potential + Math.round(maxValue / Math.sqrt((x - sphere.x)**2 + (y - sphere.y)**2))
+                        grid[y][x].potential = grid[y][x].potential + parseFloat((sphere.potential / Math.sqrt((x - sphere.x)**2 + (y - sphere.y)**2)).toFixed(5))
                     }
                 }
             }
+
+            grid[sphere.y][sphere.x].potential = sphere.potential
         })
 
         return grid
